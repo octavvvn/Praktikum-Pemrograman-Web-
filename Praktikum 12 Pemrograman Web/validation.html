@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Validation</title>
+  <style>
+    body {
+      background-color: chocolate;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: coral;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input {
+      width: calc(100% - 16px);
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      border: 1px dashed #333;
+      border-radius: 4px;
+    }
+
+    input[type="number"] {
+      width: calc(100% - 16px);
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      border: 1px dashed #333;
+      border-radius: 4px;
+      appearance: none; 
+    }
+
+    .error {
+      color: red;
+      margin-top: -16px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    input[type="submit"] {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #555;
+    }
+
+    #successMessage {
+      color: #333;
+      font-weight: bold;
+      margin-top: 16px;
+    }
+
+    #dataTable {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    #dataTable th, #dataTable td {
+      border: 1px dashed #333;
+      padding: 10px;
+      text-align: left;
+    }
+
+    #dataTable th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    #dataTable tbody tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Form Validation</h1>
+  <form id="ticketForm" onsubmit="validateForm(event)">
+    <label for="nama">Nama Pelanggan:</label>
+    <input type="text" id="nama" name="nama" maxlength="30" required>
+    <span class="error" id="namaError"></span>
+    <br>
+
+    <label for="email">Alamat Email:</label>
+    <input type="email" id="email" name="email" required>
+    <span class="error" id="emailError"></span>
+    <br>
+
+    <label for="jamKeberangkatan">Jam Keberangkatan:</label>
+    <input type="time" id="jamKeberangkatan" name="jamKeberangkatan" required>
+    <span class="error" id="jamKeberangkatanError"></span>
+    <br>
+
+    <label for="tujuan">Tujuan Destinasi:</label>
+    <input type="text" id="tujuan" name="tujuan" required>
+    <span class="error" id="tujuanError"></span>
+    <br>
+
+    <label for="jumlahTiket">Jumlah Tiket:</label>
+    <input type="number" id="jumlahTiket" name="jumlahTiket" min="1" required>
+    <span class="error" id="jumlahTiketError"></span>
+    <br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="successMessage"></div>
+
+  <table id="dataTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>Jam Keberangkatan</th>
+        <th>Tujuan Destinasi</th>
+        <th>Jumlah Tiket</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+
+  <script>
+    function validateForm(event) {
+      var nama = document.getElementById('nama').value;
+      var email = document.getElementById('email').value;
+      var jamKeberangkatan = document.getElementById('jamKeberangkatan').value;
+      var tujuan = document.getElementById('tujuan').value;
+      var jumlahTiket = document.getElementById('jumlahTiket').value;
+
+      clearErrorMessages();
+      var isValid = true;
+
+      if (nama.length > 30) {
+        document.getElementById('namaError').innerHTML = 'Nama pelanggan maksimal 30 karakter.';
+        isValid = false;
+      }
+      if (!isValid) {
+        event.preventDefault();
+        return;
+      }
+
+      var successMessage = document.getElementById('successMessage');
+      successMessage.innerHTML = 'Thank You, ' + nama + '! Form submitted successfully!';
+      successMessage.style.display = 'block';
+
+      var dataTable = document.getElementById('dataTable');
+      dataTable.style.display = 'block';
+
+      var dataBody = document.getElementById('dataBody');
+      var newRow = dataBody.insertRow();
+      var cell1 = newRow.insertCell(0);
+      var cell2 = newRow.insertCell(1);
+      var cell3 = newRow.insertCell(2);
+      var cell4 = newRow.insertCell(3);
+      var cell5 = newRow.insertCell(4);
+
+      cell1.innerHTML = nama;
+      cell2.innerHTML = email;
+      cell3.innerHTML = jamKeberangkatan;
+      cell4.innerHTML = tujuan;
+      cell5.innerHTML = jumlahTiket;
+
+      document.getElementById('ticketForm').reset();
+
+      setTimeout(function () {
+        successMessage.style.display = 'none';
+      }, 3000);
+
+      event.preventDefault();
+    }
+
+    function clearErrorMessages() {
+      var errorElements = document.querySelectorAll('.error');
+      errorElements.forEach(function (element) {
+        element.innerHTML = '';
+      });
+    }
+  </script>
+</body>
+</html>
